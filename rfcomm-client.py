@@ -11,7 +11,10 @@ port = 1
 sock=bluetooth.BluetoothSocket( bluetooth.RFCOMM )
 sock.connect((bd_addr, port))
 
-sock.send("hello!!")
+sock.send("helloooo!!")
 print 'Sent data'
+
+#data = sock.recv(256)
+#print 'received [%s]'%data
 
 sock.close()
