@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
         s5 = 'Serial overload\nSerial overload\n'
         s6 = 'Serial overload\n111.00\nSerial overload\n'
         s7 = '22'
-        self.assertEqual( rf.parse_reading(s1) , 91)
+        self.assertEqual( rf.parse_reading(s1) , 89)
         assert rf.parse_reading(s2) == -1
         assert rf.parse_reading(s3) == 6
         self.assertEqual( rf.parse_reading(s4) , 1394)
