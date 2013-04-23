@@ -1,1 +1,5 @@
 Repository for the Ultra Smart Sensing Project.
+
+mySensorAPI.ino - arduino sketch that output LUX values from a TSL2561 sensor
+rfcomm_client.py - module that connects to arduino board via bluetooth
+ and read values
