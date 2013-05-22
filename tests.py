@@ -20,5 +20,8 @@ class Test(unittest.TestCase):
         self.assertEqual(rf.parse_reading(s7),22)
         
 
+    def test_MAC_valid(self):
+        m1 = '12:10:13:A3:88:22:00'
+        self.assertTrue(rf.MAC_valid(m1))
 if __name__ == '__main__':
     unittest.main()
