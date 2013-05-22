@@ -2,6 +2,30 @@ import bluetooth
 import sys,serial,time
 import re
 import argparse
+import select
+
+class MyDiscoverer (bluetooth.DeviceDiscoverer) :
+    """Kludge to work around bluetooth.discover_devices not working
+    Usage: MyDiscoverer.discover_my_devices()
+    """
+    def pre_inquiry (self) :
+        self.done = False
+    def device_discovered(self, address, device_class, name):
+        # print "%s - %s" % (address , name)
+        if address not in self.discovered_list:
+            self.discovered_list.append(address)
+    def inquiry_complete(self) :
+        self.done = True
+    def discover_my_devices(self):
+        self.discovered_list = []
+        self.find_devices(lookup_names = False)
+        while True :
+            can_read, can_write, has_exc = select.select ([self ], [ ], [ ])
+            if self in can_read :                             
+                self.process_event()                               
+            if self.done :
+                break
+        return self.discovered_list
 
 def parse_reading(data):
     """
@@ -50,6 +74,7 @@ Connect to bluetooth device and read data
 if __name__ == '__main__':
     global sock
     parser = argparse.ArgumentParser()
+    parser.add_argument('-d','--discover',help='Discover devices',action='store_true')
     parser.add_argument('-a','--address',help='MAC address of bluetooth device')
     parser.add_argument('-p','--port',help='rfcomm port number',type=int)
     args = parser.parse_args()
@@ -60,9 +85,11 @@ if __name__ == '__main__':
         sock.connect((args.address,args.port))
         read()
         parser.exit(message = "Fininished reading\n")
-        pass
-        
-##    bd_addr = "00:12:10:23:10:18" #itade address
-##    itade2 = '00:12:12:10:90:88'
-##    port = 2
+    elif args.discover:
+        d = MyDiscoverer()
+        lst = d.discover_my_devices()
+        for device in lst:
+            print device
+            #print "{}   {}".format(device,bluetooth.lookup_name(device))
+        parser.exit(message= "Discovered devices\n")
 
